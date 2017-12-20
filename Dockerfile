@@ -14,4 +14,4 @@ RUN apk add --update --no-cache --virtual .build-deps \
 COPY imagescripts ${CROW_HOME}
 WORKDIR ${CROW_HOME}
 ENTRYPOINT ["/sbin/tini","--","/opt/crow/docker-entrypoint.sh"]
-CMD ["crow"]
+CMD ["cronium"]

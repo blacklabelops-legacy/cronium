@@ -4,6 +4,15 @@ set -o errexit
 
 [[ ${DEBUG} == true ]] && set -x
 
+function pipeEnvironmentVariables() {
+  local environmentfile="/etc/profile.d/cronium.sh"
+  cat > ${environmentfile} <<_EOF_
+  #!/bin/sh
+_EOF_
+  sh -c export >> ${environmentfile}
+  sed -i.bak '/^export [a-zA-Z0-9_]*:/d' ${environmentfile}
+}
+
 function createCustomUser {
     local userid=$1
     local groupid=$2
@@ -91,7 +100,8 @@ if [ -n "${CROW_UID}" ]; then
   #chown crow:crow application.yml
 fi
 
-if [ "$1" = 'crow' ] || [ "${1:0:1}" = '-' ]; then
+if [ "$1" = 'cronium' ] || [ "${1:0:1}" = '-' ]; then
+  pipeEnvironmentVariables
   if [ -n "${CROW_UID}" ]; then
       printUserInfo
       exec su-exec crow java -jar crow-application.jar "$@"

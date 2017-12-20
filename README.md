@@ -4,7 +4,7 @@ This is still work in progress!
 
 Crow is a cron web scheduler for container environments.
 
-Why Crow?
+Why Cronium?
 
 * Perfect for container environments, as it is easy configurable and customizable.
 * You can specify the executing user.
@@ -70,7 +70,7 @@ MAINTAINER Your Name <youremail@yourhost.com>
 # install toolset via apk
 RUN ...
 
-CMD ["crow"]
+CMD ["cronium"]
 ~~~~
 
 > Note: The base image is alpine and uses the apk package manager.
