@@ -17,17 +17,17 @@ function createCustomUser {
     local userid=$1
     local groupid=$2
     if [ -n "${groupid}" ]; then
-        addgroup -g $groupid crow
+        addgroup -g $groupid cronium
     else
-        addgroup crow
+        addgroup cronium
     fi
-    adduser -G crow -s /bin/bash -u $userid -h /home/crow -S crow
-    export HOME=/home/crow
+    adduser -G cronium -s /bin/bash -u $userid -h /home/cronium -S cronium
+    export HOME=/home/cronium
 }
 
 function printUserInfo {
-    local userid=$(id -u crow)
-    local groupid=$(id -g crow)
+    local userid=$(id -u cronium)
+    local groupid=$(id -g cronium)
     echo "Starting user with Group-Id: $groupid"
     echo "Starting user with User-Id: $userid"
 }
@@ -69,6 +69,11 @@ _EOF_
         local VAR_JOB_NAME="JOB${i}NAME"
         local VAR_JOB_CRON="JOB${i}CRON"
         local VAR_JOB_COMMAND="JOB${i}COMMAND"
+        local VAR_JOB_SHELLCOMMAND="JOB${i}SHELLCOMMAND"
+        local VAR_JOB_WORKDIR="JOB${i}WORKDIR"
+        local VAR_JOB_ON_ERROR="JOB${i}ON_ERROR"
+        local VAR_JOB_EXECUTION="JOB${i}EXECUTION"
+
         if [ ! -n "${!VAR_JOB_NAME}" ]; then
             break
         fi
@@ -77,7 +82,66 @@ _EOF_
       cron: '${!VAR_JOB_CRON}'
       command: ${!VAR_JOB_COMMAND}
 _EOF_
-        createEnvs $configFile JOB${i}
+
+      local jobWorkingDir=
+      if [ -n "${!VAR_JOB_WORKDIR}" ]; then
+        jobWorkingDir=${!VAR_JOB_WORKDIR}
+      elif [ -n "${CRONIUM_WORKING_DIRECTORY}" ]; then
+        jobWorkingDir=${CRONIUM_WORKING_DIRECTORY}
+      fi
+
+      if [ -n "${jobWorkingDir}" ]; then
+        cat >> $configFile <<_EOF_
+      workingDirectory: ${jobWorkingDir}
+_EOF_
+      fi
+
+      local jobShellCommand=
+      if [ -n "${!VAR_JOB_SHELLCOMMAND}" ]; then
+        jobShellCommand=${!VAR_JOB_SHELLCOMMAND}
+      elif [ -n "${CRONIUM_WORKING_DIRECTORY}" ]; then
+        jobShellCommand=${CRONIUM_WORKING_DIRECTORY}
+      else
+        jobShellCommand="/bin/bash -c"
+      fi
+
+      if [ -n "${jobShellCommand}" ]; then
+        cat >> $configFile <<_EOF_
+      shellCommand: ${jobShellCommand}
+_EOF_
+      fi
+
+      local jobOnError=
+      if [ -n "${!VAR_JOB_ON_ERROR}" ]; then
+        jobOnError=${!VAR_JOB_ON_ERROR}
+      elif [ -n "${CRONIUM_ON_ERROR}" ]; then
+        jobOnError=${CRONIUM_ON_ERROR}
+      else
+        jobOnError="continue"
+      fi
+
+      if [ -n "${jobOnError}" ]; then
+        cat >> $configFile <<_EOF_
+      errorMode: ${jobOnError}
+_EOF_
+      fi
+
+      local jobExecution=
+      if [ -n "${!VAR_JOB_EXECUTION}" ]; then
+        jobExecution=${!VAR_JOB_EXECUTION}
+      elif [ -n "${CRONIUM_EXECUTION}" ]; then
+        jobExecution=${CRONIUM_EXECUTION}
+      else
+        jobExecution="sequential"
+      fi
+
+      if [ -n "${jobExecution}" ]; then
+        cat >> $configFile <<_EOF_
+      execution: ${jobExecution}
+_EOF_
+      fi
+
+      createEnvs $configFile JOB${i}
     done
 }
 
@@ -95,23 +159,25 @@ if [ ! -e "application.yml" ]; then
   createConfig
 fi
 
-if [ -n "${CROW_UID}" ]; then
-  createCustomUser $CROW_UID $CROW_GID
+if [ -n "${CRONIUM_UID}" ]; then
+  createCustomUser $CRONIUM_UID $CRONIUM_GID
   #chown crow:crow application.yml
 fi
+
+cat application.yml
 
 if [ "$1" = 'cronium' ] || [ "${1:0:1}" = '-' ]; then
   pipeEnvironmentVariables
   if [ -n "${CROW_UID}" ]; then
       printUserInfo
-      exec su-exec crow java -jar crow-application.jar "$@"
+      exec su-exec cronium java -jar ${CROW_HOME}/crow-application.jar "$@"
   else
-    exec java -jar crow-application.jar "$@"
+    exec java -jar ${CROW_HOME}/crow-application.jar "$@"
   fi
 else
   if [ -n "${CROW_UID}" ]; then
     printUserInfo
-    exec su-exec crow "$@"
+    exec su-exec cronium "$@"
   else
     exec "$@"
   fi
