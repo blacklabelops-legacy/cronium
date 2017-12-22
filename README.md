@@ -1,5 +1,9 @@
 # Cronium - Dockerized Cron
 
+[![Circle CI](https://circleci.com/gh/blacklabelops/cronium.svg?style=shield)](https://circleci.com/gh/blacklabelops/cronium)
+[![Open Issues](https://img.shields.io/github/issues/blacklabelops/cronium.svg)](https://github.com/blacklabelops/cronium/issues) [![Stars on GitHub](https://img.shields.io/github/stars/blacklabelops/cronium.svg)](https://github.com/cblacklabelops/cronium/stargazers)
+[![Docker Stars](https://img.shields.io/docker/stars/blacklabelops/cronium.svg)](https://hub.docker.com/r/blacklabelops/cronium/) [![Docker Pulls](https://img.shields.io/docker/pulls/blacklabelops/cronium.svg)](https://hub.docker.com/r/blacklabelops/cronium/)
+
 Cron scheduler for container environments.
 
 Why Cronium?
@@ -9,6 +13,15 @@ Why Cronium?
 * You can specify environment variables.
 * Dedicated logging to console.
 * Low profile cron scheduler.
+
+# Table Of Contents
+
+* [Make It Short](#make-it-short)
+* [Cron Configuration](#cron-configuration)
+  * [Global Configuration](#global-configuration)
+  * [Job Configuration](#job-configuration)
+* [Changing The User](#changing-the-user)
+* [Extending The Image](#extending-the-image)
 
 # Make It Short
 
@@ -48,7 +61,7 @@ This image has a global configuration for all jobs and a job configuration for e
 The global configuration sets values for all job but settings can be overriden by defining the same
 configuration field inside a job configuration.
 
-## Global configuration
+## Global Configuration
 
 The global configuration consists of the following fields:
 
@@ -156,3 +169,7 @@ CMD ["cronium"]
 > Note: The base image is alpine and uses the apk package manager.
 
 > All tools will be available for your cron commands.
+
+# References
+
+* [Crow Cron Web Scheduler](https://github.com/blacklabelops/crow)
