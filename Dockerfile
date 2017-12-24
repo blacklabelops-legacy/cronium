@@ -1,4 +1,4 @@
-FROM blacklabelops/java
+FROM blacklabelops/java:openjre.8
 
 ENV CROW_VERSION=1.0-SNAPSHOT \
     CROW_HOME=/opt/crow/ \
