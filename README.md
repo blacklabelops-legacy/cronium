@@ -1,6 +1,5 @@
 # Cronium - Dockerized Cron
 
-[![Circle CI](https://circleci.com/gh/blacklabelops/cronium.svg?style=shield)](https://circleci.com/gh/blacklabelops/cronium)
 [![Open Issues](https://img.shields.io/github/issues/blacklabelops/cronium.svg)](https://github.com/blacklabelops/cronium/issues) [![Stars on GitHub](https://img.shields.io/github/stars/blacklabelops/cronium.svg)](https://github.com/cblacklabelops/cronium/stargazers)
 [![Docker Stars](https://img.shields.io/docker/stars/blacklabelops/cronium.svg)](https://hub.docker.com/r/blacklabelops/cronium/) [![Docker Pulls](https://img.shields.io/docker/pulls/blacklabelops/cronium.svg)](https://hub.docker.com/r/blacklabelops/cronium/)
 
@@ -13,6 +12,19 @@ Why Cronium?
 * You can specify environment variables.
 * Dedicated logging to console.
 * Low profile cron scheduler.
+
+## Supported Tags And Respective Dockerfile Links
+
+| Bundle | Version | Tags  | Dockerfile | Readme | Example |
+|--------|---------|-------|------------|--------|---------|
+| Cronium  | latest | latest | [Dockerfile](https://github.com/blacklabelops/cronium/blob/master/Dockerfile) | [Readme](https://github.com/blacklabelops/cronium/blob/master/README.md) | blacklabelops/cronium:latest
+| Cronium + Tools  | latest | tools | [Dockerfile](https://github.com/blacklabelops/cronium/blob/master/cronium-tools/Dockerfile) | | blacklabelops/cronium:tools |
+| Cronium + Docker Tools | latest | docker | [Dockerfile](https://github.com/blacklabelops/cronium/blob/master/cronium-docker/Dockerfile) | [Readme](https://github.com/blacklabelops/cronium/blob/master/cronium-docker/README.md) | blacklabelops/cronium:docker |
+| Cronium + AWS Cli | latest | aws | [Dockerfile](https://github.com/blacklabelops/cronium/blob/master/cronium-aws/Dockerfile) | [Readme](https://github.com/blacklabelops/cronium/blob/master/cronium-aws/README.md) | blacklabelops/cronium:aws |
+| Cronium + GCE Cli | latest | gce | [Dockerfile](https://github.com/blacklabelops/cronium/blob/master/cronium-gcloud/Dockerfile) | [Readme](https://github.com/blacklabelops/cronium/blob/master/cronium-gcloud/README.md) | blacklabelops/cronium:gce |
+| Cronium + All Above | latest | cloud | [Dockerfile](https://github.com/blacklabelops/cronium/blob/master/cronium-gcloud/Dockerfile) | [Readme](https://github.com/blacklabelops/cronium/blob/master/cronium-gcloud/README.md) | blacklabelops/cronium:cloud |
+
+> AWS = Amazon Web Services, GCE = Google Cloud Engine
 
 # Table Of Contents
 

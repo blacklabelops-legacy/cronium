@@ -166,6 +166,8 @@ fi
 
 cat application.yml
 
+source $CROW_HOME/import-gpg.sh
+
 if [ "$1" = 'cronium' ] || [ "${1:0:1}" = '-' ]; then
   pipeEnvironmentVariables
   if [ -n "${CROW_UID}" ]; then
