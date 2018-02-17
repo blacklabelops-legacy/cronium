@@ -7,7 +7,7 @@ ARG BUILD_DATE=undefined
 USER root
 
 RUN apk add --update \
-      ssh \
+      openssh \
       gpgme \
       gnupg1 \
       wget \
