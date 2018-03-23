@@ -8,7 +8,7 @@ RUN apk add --update --no-cache --virtual .build-deps \
       curl && \
     mkdir -p ${CROW_HOME} && \
     mkdir -p ${CRONIUM_HOME} && \
-    curl -fsSL https://14-112953069-gh.circle-artifacts.com/0/root/crow/application/target/crow-application-0.5-SNAPSHOT.jar -o ${CROW_HOME}/crow-application.jar && \
+    curl -fsSL https://17-112953069-gh.circle-artifacts.com/0/root/crow/application/target/crow-application-0.5-SNAPSHOT.jar -o ${CROW_HOME}/crow-application.jar && \
     # Cleanup
     apk del .build-deps && \
     rm -rf /var/cache/apk/* && rm -rf /tmp/* && rm -rf /var/log/*

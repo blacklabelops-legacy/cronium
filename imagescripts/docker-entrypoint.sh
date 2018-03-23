@@ -69,10 +69,13 @@ _EOF_
         local VAR_JOB_NAME="JOB${i}NAME"
         local VAR_JOB_CRON="JOB${i}CRON"
         local VAR_JOB_COMMAND="JOB${i}COMMAND"
+        local VAR_JOB_PRE_COMMAND="JOB${i}PRE_COMMAND"
+        local VAR_JOB_POST_COMMAND="JOB${i}POST_COMMAND"
         local VAR_JOB_SHELLCOMMAND="JOB${i}SHELLCOMMAND"
         local VAR_JOB_WORKDIR="JOB${i}WORKDIR"
         local VAR_JOB_ON_ERROR="JOB${i}ON_ERROR"
         local VAR_JOB_EXECUTION="JOB${i}EXECUTION"
+        local VAR_JOB_TIMEOUT_MINUTES="JOB${i}TIMEOUT_MINUTES"
 
         if [ ! -n "${!VAR_JOB_NAME}" ]; then
             break
@@ -138,6 +141,39 @@ _EOF_
       if [ -n "${jobExecution}" ]; then
         cat >> $configFile <<_EOF_
       execution: ${jobExecution}
+_EOF_
+      fi
+
+      local preCommand=
+      if [ -n "${!VAR_JOB_PRE_COMMAND}" ]; then
+        preCommand=${!VAR_JOB_PRE_COMMAND}
+      fi
+
+      if [ -n "${preCommand}" ]; then
+        cat >> $configFile <<_EOF_
+      preCommand: ${preCommand}
+_EOF_
+      fi
+
+      local postCommand=
+      if [ -n "${!VAR_JOB_POST_COMMAND}" ]; then
+        postCommand=${!VAR_JOB_POST_COMMAND}
+      fi
+
+      if [ -n "${postCommand}" ]; then
+        cat >> $configFile <<_EOF_
+      postCommand: ${postCommand}
+_EOF_
+      fi
+
+      local timeoutMinutes=
+      if [ -n "${!VAR_JOB_TIMEOUT_MINUTES}" ]; then
+        timeoutMinutes=${!VAR_JOB_TIMEOUT_MINUTES}
+      fi
+
+      if [ -n "${timeoutMinutes}" ]; then
+        cat >> $configFile <<_EOF_
+      timeOutMinutes: ${timeoutMinutes}
 _EOF_
       fi
 

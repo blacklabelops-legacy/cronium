@@ -111,7 +111,10 @@ Job settings are defined by configuration fields and the jobs can be defined usi
 * `NAME`: (required) A unique job name, must be unique among all container's jobs.
 * `CRON`: (required) The cron schedule. Specifics and syntax can be found here [Wikipedia - Cron](https://en.wikipedia.org/wiki/Cron)
 * `COMMAND`: (required) Then command to be executed.
+* `PRE_COMMAND`: (Optionel) This command to be executed before the actual command.
+* `POST_COMMAND`: (Optionel) This command to be executed after the actual command.
 * `WORKING_DIRECTORY`: (Optional) The working directory. Default: Set by global configuration.
+* `TIMEOUT_MINUTES`: (Optional) Timeout for this job in minutes. Default: No timeout.
 * `SHELL_COMMAND`: (Optional) The shell command. Default: Set by global configuration.
 * `EXECUTION`: (Optional) The execution mode for this job. Default: Set by global configuration.
 * `ON_ERROR`: (Optional) The error mode for this job. Default: Set by global configuration.
@@ -138,8 +141,11 @@ Example full job configuration:
 $ docker run -d --name cronium \
     -e "JOB1NAME=Job1" \
     -e "JOB1CRON=* * * * *" \
+    -e "JOB1PRE_COMMAND=echo 'Hello World - Pre'" \
     -e "JOB1COMMAND=echo 'Hello World'" \
+    -e "JOB1POST_COMMAND=echo 'Hello World - Post'" \
     -e "JOB1WORKING_DIRECTORY=/tmp" \
+    -e "JOB1TIMEOUT_MINUTES=1" \
     -e "JOB1SHELL_COMMAND=/bin/bash -c" \
     -e "JOB1EXECUTION=sequential" \
     -e "JOB1ON_ERROR=continue" \
