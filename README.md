@@ -188,6 +188,38 @@ CMD ["cronium"]
 
 > All tools will be available for your cron commands.
 
+# Jobber migration
+
+This image can be used with environment variables from `blacklabelops/jobber-cron`. Just run them without
+your old environment variables, making migration from the other image easier.
+
+Example:
+
+~~~~
+$ docker run -d \
+	  --name cronium \
+    -e "JOB_NAME1=TestEcho" \
+    -e "JOB_COMMAND1=echo hello world" \
+    -e "JOB_TIME1=1 * * * * *"
+    blacklabelops/cronium
+~~~~
+
+Will be the same as running:
+
+~~~~
+$ docker run -d \
+	  --name cronium \
+    -e "JOB1NAME=TestEcho" \
+    -e "JOB1COMMAND=echo hello world" \
+    -e "JOB1CRON=* * * * *"
+    blacklabelops/cronium
+~~~~
+
+Issues:
+
+* Cronium does not have seconds specifier. So the last jobber cron number will be pruned.
+* Jobbers `Backoff` will be interpreted as `continue`.
+
 # References
 
 * [Crow Cron Web Scheduler](https://github.com/blacklabelops/crow)

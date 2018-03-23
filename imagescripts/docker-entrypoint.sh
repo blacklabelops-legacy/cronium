@@ -191,6 +191,8 @@ _EOF_
     createJobs application.yml
 }
 
+source ${CROW_HOME}/jobber-migration.sh
+
 if [ ! -e "application.yml" ]; then
   createConfig
 fi
