@@ -200,7 +200,9 @@ if [ -n "${CRONIUM_UID}" ]; then
   #chown crow:crow application.yml
 fi
 
-cat application.yml
+if [ "${DEBUG}" = 'true' ]; then
+  cat application.yml
+fi
 
 source $CROW_HOME/import-gpg.sh
 
