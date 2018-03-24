@@ -6,19 +6,28 @@
         <Pattern>${LOG4J_LOG_PATTERN}</Pattern>
       </PatternLayout>
     </Console>
+    <File name="File-Appender" fileName="${LOG_FILE}">
+      <PatternLayout>
+        <Pattern>${LOG4J_LOG_PATTERN}</Pattern>
+      </PatternLayout>
+    </File>
   </Appenders>
 
   <Loggers>
     <Logger name="com.blacklabelops.crow" level="info" additivity="false">
+      <AppenderRef ref="File-Appender"/>
       <AppenderRef ref="Console-Appender"/>
     </Logger>
     <Logger name="org.springframework" level="error" additivity="false">
+      <AppenderRef ref="File-Appender"/>
       <AppenderRef ref="Console-Appender"/>
     </Logger>
     <Logger name="org.hibernate" level="error" additivity="false">
+      <AppenderRef ref="File-Appender"/>
       <AppenderRef ref="Console-Appender"/>
     </Logger>
     <Root level="info">
+      <AppenderRef ref="File-Appender"/>
       <AppenderRef ref="Console-Appender"/>
     </Root>
   </Loggers>

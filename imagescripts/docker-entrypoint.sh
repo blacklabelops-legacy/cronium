@@ -10,8 +10,14 @@ source ${CROW_HOME}/jobber-migration.sh
 
 source $CROW_HOME/import-gpg.sh
 
+source $CROW_HOME/create-log-config.sh
+
 if [ ! -e "application.yml" ]; then
   createConfig
+fi
+
+if [ ! -e "log4j.xml" ]; then
+  createLogConfig
 fi
 
 if [ -n "${CRONIUM_UID}" ]; then
@@ -20,11 +26,7 @@ fi
 
 if [ "${DEBUG}" = 'true' ]; then
   cat application.yml
-fi
-
-log4j_config=${CROW_HOME}/log4j2-spring.xml
-if [ -n "${LOG4J_CONFIG}" ]; then
-  log4j_config=${LOG4J_CONFIG}
+  cat log4j.xml
 fi
 
 importKeys
@@ -34,9 +36,9 @@ if [ "$1" = 'cronium' ] || [ "${1:0:1}" = '-' ]; then
   pipeEnvironmentVariables
   if [ -n "${CROW_UID}" ]; then
       printUserInfo
-      exec su-exec cronium java -Dlogging.config=${log4j_config} -jar ${CROW_HOME}/crow-application.jar "$@"
+      exec su-exec cronium java -Dlogging.config=log4j.xml -jar ${CROW_HOME}/crow-application.jar "$@"
   else
-    exec java -Dlogging.config=${log4j_config} -jar ${CROW_HOME}/crow-application.jar "$@"
+    exec java -Dlogging.config=log4j.xml -jar ${CROW_HOME}/crow-application.jar "$@"
   fi
 else
   if [ -n "${CROW_UID}" ]; then
