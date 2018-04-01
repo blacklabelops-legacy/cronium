@@ -3,6 +3,8 @@
 function handleLogFilePattern() {
   local logPattern=${LOG4J_LOG_PATTERN:-'[%-5level] %d{yyyy-MM-dd HH:mm:ss} %c{1} - %msg%n'}
   export LOG4J_LOG_PATTERN=$logPattern
+  local logLevel=${LOG4J_LOG_LEVEL:-'info'}
+  export LOG4J_LOG_LEVEL=$logLevel
 }
 
 function createLogConfig() {

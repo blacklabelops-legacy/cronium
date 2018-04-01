@@ -67,7 +67,7 @@ _EOF_
         local VAR_JOB_COMMAND="JOB${i}COMMAND"
         local VAR_JOB_PRE_COMMAND="JOB${i}PRE_COMMAND"
         local VAR_JOB_POST_COMMAND="JOB${i}POST_COMMAND"
-        local VAR_JOB_SHELLCOMMAND="JOB${i}SHELLCOMMAND"
+        local VAR_JOB_SHELLCOMMAND="JOB${i}SHELL_COMMAND"
         local VAR_JOB_WORKDIR="JOB${i}WORKDIR"
         local VAR_JOB_ON_ERROR="JOB${i}ON_ERROR"
         local VAR_JOB_EXECUTION="JOB${i}EXECUTION"
@@ -98,8 +98,8 @@ _EOF_
       local jobShellCommand=
       if [ -n "${!VAR_JOB_SHELLCOMMAND}" ]; then
         jobShellCommand=${!VAR_JOB_SHELLCOMMAND}
-      elif [ -n "${CRONIUM_WORKING_DIRECTORY}" ]; then
-        jobShellCommand=${CRONIUM_WORKING_DIRECTORY}
+      elif [ -n "${CRONIUM_SHELL_COMMAND}" ]; then
+        jobShellCommand=${CRONIUM_SHELL_COMMAND}
       else
         jobShellCommand="/bin/bash -c"
       fi
