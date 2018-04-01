@@ -14,7 +14,7 @@
   </Appenders>
 
   <Loggers>
-    <Logger name="com.blacklabelops.crow" level="info" additivity="false">
+    <Logger name="com.blacklabelops.crow" level="${LOG4J_LOG_LEVEL}" additivity="false">
       <AppenderRef ref="File-Appender"/>
       <AppenderRef ref="Console-Appender"/>
     </Logger>

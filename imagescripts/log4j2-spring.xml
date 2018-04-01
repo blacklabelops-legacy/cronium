@@ -9,7 +9,7 @@
   </Appenders>
 
   <Loggers>
-    <Logger name="com.blacklabelops.crow" level="info" additivity="false">
+    <Logger name="com.blacklabelops.crow" level="${LOG4J_LOG_LEVEL}" additivity="false">
       <AppenderRef ref="Console-Appender"/>
     </Logger>
     <Logger name="org.springframework" level="error" additivity="false">
