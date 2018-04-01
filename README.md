@@ -7,6 +7,7 @@ Cron scheduler for container environments.
 
 Why Cronium?
 
+* Commands are executed inside remote containers!
 * Perfect for container environments, as it is easy configurable and customizable.
 * You can specify the executing user.
 * You can specify environment variables.
@@ -37,9 +38,42 @@ Why Cronium?
 
 # Make It Short
 
-You can define an arbitrary amount of cron jobs. This images uses enumerated environment variables for multiple jobs.
+You can define an arbitrary amount of cron jobs running inside local or remote Docker containers.
 
-Example Single Job:
+This image uses enumerated environment variables for multiple jobs.
+
+Example single job inside remote container:
+
+~~~~
+$ docker run -d --name cronium \
+    -v /var/run/docker.sock:/var/run/docker.sock \
+    -e "JOB1NAME=Job1" \
+    -e "JOB1CRON=* * * * *" \
+    -e "JOB1COMMAND=echo 'Hello World'" \
+    -e "JOB1SHELL_COMMAND=docker exec CONTAINER_NAME /bin/bash -c" \
+    blacklabelops/cronium
+~~~~
+
+> Note: Job will be executed inside bash shell inside container with name `CONTAINER_NAME`.
+
+Example multiple jobs inside remote container:
+
+~~~~
+$ docker run -d --name cronium \
+    -v /var/run/docker.sock:/var/run/docker.sock \
+    -e "CRONIUM_SHELL_COMMAND=docker exec CONTAINER_NAME /bin/bash -c" \
+    -e "JOB1NAME=Job1" \
+    -e "JOB1CRON=* * * * *" \
+    -e "JOB1COMMAND=echo 'Hello World'" \
+    -e "JOB2NAME=Job2" \
+    -e "JOB2CRON=* * * * *" \
+    -e "JOB2COMMAND=echo 'Hello Universe'" \
+    blacklabelops/cronium
+~~~~
+
+> Note: All jobs will be executed inside bash shell inside container with name `CONTAINER_NAME`.
+
+Example single job in local container:
 
 ~~~~
 $ docker run -d --name cronium \
@@ -51,7 +85,7 @@ $ docker run -d --name cronium \
 
 > Note: All enumerations must start with 1!
 
-Example Multiple Jobs:
+Example nultiple jobs inside local container:
 
 ~~~~
 $ docker run -d --name cronium \
@@ -75,7 +109,7 @@ configuration field inside a job configuration.
 
 ## Global Configuration
 
-The global configuration consists of the following fields:
+The global configuration consists of the following fields. The field's environment variables are all preceeded by `CRONIUM_`:
 
 * `WORKING_DIRECTORY`: (Optional) The working directory for all cron jobs. Must be full path leading to an existing directory inside the container.
 * `SHELL_COMMAND`: (Optional) The shell command for all cron jobs. Default: `/bin/bash -c`, all jobs are executed inside bash shell by default.

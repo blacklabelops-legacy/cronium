@@ -6,7 +6,6 @@ ARG BUILD_DATE=undefined
 
 USER root
 
-ENV DOCKER_VERSION=17.09.0-ce
 ENV DOCKER_MACHINE_VERSION=v0.13.0
 
 RUN apk add --update \
@@ -14,8 +13,6 @@ RUN apk add --update \
       curl \
       py-pip && \
     pip install --upgrade pip && \
-    curl -L -o /tmp/docker-${DOCKER_VERSION}.tgz https://download.docker.com/linux/static/stable/x86_64/docker-${DOCKER_VERSION}.tgz && tar -xz -C /tmp -f /tmp/docker-${DOCKER_VERSION}.tgz && mv /tmp/docker/docker /usr/local/bin && \
-    chmod +x /usr/local/bin/docker && \
     pip install docker-compose docker-cloud && \
     curl -L https://github.com/docker/machine/releases/download/${DOCKER_MACHINE_VERSION}/docker-machine-`uname -s`-`uname -m` >/usr/local/bin/docker-machine && \
     chmod +x /usr/local/bin/docker-machine && \
