@@ -186,3 +186,12 @@ crow:
 _EOF_
     createJobs application.yml
 }
+
+function createPropertyFile {
+    touch application.properties
+    cat > application.properties <<_EOF_
+spring.main.banner-mode=off
+spring.config.location=${CROW_HOME}application.yml
+spring.jackson.serialization.WRITE_DATES_AS_TIMESTAMPS=false
+_EOF_
+}

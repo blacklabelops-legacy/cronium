@@ -12,7 +12,8 @@ source $CROW_HOME/import-gpg.sh
 
 source $CROW_HOME/create-log-config.sh
 
-if [ ! -e "application.yml" ]; then
+if [ ! -e "application.properties" ]; then
+  createPropertyFile
   createConfig
 fi
 
@@ -29,9 +30,13 @@ if [ "${DEBUG}" = 'true' ]; then
   cat log4j.xml
 fi
 
+if [ -n "${CRONIUM_BASE_URL}" ]; then
+  export CROW_BASE_URL=${CRONIUM_BASE_URL}
+fi
+
 importKeys
 
-if [ "$1" = 'cronium' ] || [ "${1:0:1}" = '-' ]; then
+if [ "$1" = 'cronium-server' ] || [ "${1:0:1}" = '-' ]; then
   migrateJobberEnvs
   pipeEnvironmentVariables
   if [ -n "${CROW_UID}" ]; then

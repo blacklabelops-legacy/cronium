@@ -35,6 +35,9 @@ Why Cronium?
   * [Job Configuration](#job-configuration)
 * [Changing The User](#changing-the-user)
 * [Extending The Image](#extending-the-image)
+* [Command Line Interface](#command-line-interface)
+* [Jobber Migration](#jobber-migration)
+* [References](#references)
 
 # Make It Short
 
@@ -215,14 +218,75 @@ MAINTAINER Your Name <youremail@yourhost.com>
 # install toolset via apk
 RUN ...
 
-CMD ["cronium"]
+CMD ["cronium-server"]
 ~~~~
 
 > Note: The base image is alpine and uses the apk package manager.
 
 > All tools will be available for your cron commands.
 
-# Jobber migration
+# Command Line Client
+
+This image includes a command line interface (cli). The cli can be run against local or remote cronium server.
+
+Supported Commands:
+
+| Command | Description |
+|---------|-------------|
+| list | List all jobs. |
+| version | Print client and server versions. |
+| help | Print help. |
+
+Configuration:
+
+* `CRONIUM_BASE_URL`: The server's base url. Default: `http://localhost:8080`.
+
+Usage:
+
+~~~~
+$ docker exec your_cronium_container cronium list
+~~~~
+
+> Lists all jobs in cronium container with name `your_cronium_container`.
+
+Remote Usage:
+
+~~~~
+$ docker run --rm -e "CRONIUM_BASE_URL=http://your_cronium_container:8080" blacklabelops/cronium cronium list
+~~~~
+
+> Runs command against remote container with host name `your_cronium_container`.
+
+Full Example:
+
+1. Create Docker Network
+
+~~~~
+$ docker create network cronium
+~~~~
+
+2. Start Cronium
+
+~~~~
+$ docker run -d --name cronium \
+    --network cronium
+    -e "JOB1NAME=Job1" \
+    -e "JOB1CRON=* * * * *" \
+    -e "JOB1COMMAND=echo 'Hello World'" \
+    blacklabelops/cronium
+~~~~
+
+3. Remote List Cronium Jobs
+
+~~~~
+$ docker run --rm \
+    --network cronium \
+    -e "CRONIUM_BASE_URL=http://cronium:8080" \
+    blacklabelops/cronium \
+    cronium list
+~~~~
+
+# Jobber Migration
 
 This image can be used with environment variables from `blacklabelops/jobber-cron`. Just run them without
 your old environment variables, making migration from the other image easier.
