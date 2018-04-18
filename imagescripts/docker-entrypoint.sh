@@ -2,7 +2,7 @@
 
 set -o errexit
 
-[[ ${DEBUG} == true ]] && set -x
+[[ ${DEBUG} == true ]] && set -x && LOG4J_LOG_LEVEL=debug
 
 source ${CROW_HOME}/create-config.sh
 
@@ -41,9 +41,9 @@ if [ "$1" = 'cronium-server' ] || [ "${1:0:1}" = '-' ]; then
   pipeEnvironmentVariables
   if [ -n "${CROW_UID}" ]; then
       printUserInfo
-      exec su-exec cronium java -Dlogging.config=log4j.xml -jar ${CROW_HOME}/crow-application.jar "$@"
+      exec su-exec cronium java ${JAVA_OPTS} -Dlogging.config=log4j.xml -jar ${CROW_HOME}/crow-application.jar "$@"
   else
-    exec java -Dlogging.config=log4j.xml -jar ${CROW_HOME}/crow-application.jar "$@"
+    exec java ${JAVA_OPTS} -Dlogging.config=log4j.xml -jar ${CROW_HOME}/crow-application.jar "$@"
   fi
 else
   if [ -n "${CROW_UID}" ]; then

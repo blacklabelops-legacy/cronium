@@ -5,27 +5,45 @@
 
 Cron scheduler for container environments.
 
-Why Cronium?
+# Why Cronium?
 
-* Commands are executed inside remote containers!
-* Perfect for container environments, as it is easy configurable and customizable.
-* You can specify the executing user.
-* You can specify environment variables.
-* Dedicated logging to console.
-* Low profile cron scheduler.
+You can define an arbitrary amount of cron jobs executed inside any Docker containers.
+
+Good for:
+
+* Databse dumps
+* Configuration reloads
+* Any periodical maintenance activity
+
+Example:
+
+Start a container and keep it running:
+
+~~~~
+$ docker run -d --name TestContainer busybox sh -c "while sleep 1; do :; done"
+~~~~
+
+> Note: Just a random container containing your application, scripts and binaries.
+
+Start the cron job with cronium:
+
+~~~~
+$ docker run -d --name cronium \
+ 	-v /var/run/docker.sock:/var/run/docker.sock \
+    -e "JOB1NAME=Job1" \
+    -e "JOB1CONTAINER_NAME=TestContainer" \
+    -e "JOB1CRON=* * * * *" \
+    -e "JOB1COMMAND=echo 'Hello World!'" \
+    blacklabelops/cronium
+~~~~
+
+> Note: Job will be executed in remote container and logged inside Cronium.
 
 ## Supported Tags And Respective Dockerfile Links
 
 | Bundle | Version | Tags  | Dockerfile | Readme | Example |
 |--------|---------|-------|------------|--------|---------|
-| Cronium  | latest | latest | [Dockerfile](https://github.com/blacklabelops/cronium/blob/master/Dockerfile) | [Readme](https://github.com/blacklabelops/cronium/blob/master/README.md) | blacklabelops/cronium:latest
-| Cronium + Tools  | latest | tools | [Dockerfile](https://github.com/blacklabelops/cronium/blob/master/cronium-tools/Dockerfile) | | blacklabelops/cronium:tools |
-| Cronium + Docker Tools | latest | docker | [Dockerfile](https://github.com/blacklabelops/cronium/blob/master/cronium-docker/Dockerfile) | [Readme](https://github.com/blacklabelops/cronium/blob/master/cronium-docker/README.md) | blacklabelops/cronium:docker |
-| Cronium + AWS Cli | latest | aws | [Dockerfile](https://github.com/blacklabelops/cronium/blob/master/cronium-aws/Dockerfile) | [Readme](https://github.com/blacklabelops/cronium/blob/master/cronium-aws/README.md) | blacklabelops/cronium:aws |
-| Cronium + GCE Cli | latest | gce | [Dockerfile](https://github.com/blacklabelops/cronium/blob/master/cronium-gcloud/Dockerfile) | [Readme](https://github.com/blacklabelops/cronium/blob/master/cronium-gcloud/README.md) | blacklabelops/cronium:gce |
-| Cronium + All Above | latest | cloud | [Dockerfile](https://github.com/blacklabelops/cronium/blob/master/cronium-gcloud/Dockerfile) | [Readme](https://github.com/blacklabelops/cronium/blob/master/cronium-gcloud/README.md) | blacklabelops/cronium:cloud |
-
-> AWS = Amazon Web Services, GCE = Google Cloud Engine
+| Cronium  | latest | latest | [Dockerfile](https://github.com/blacklabelops/cronium/blob/master/Dockerfile) | [Readme](https://github.com/blacklabelops/cronium/blob/master/README.md) | blacklabelops/cronium:latest |
 
 # Table Of Contents
 
@@ -51,30 +69,32 @@ Example single job inside remote container:
 $ docker run -d --name cronium \
     -v /var/run/docker.sock:/var/run/docker.sock \
     -e "JOB1NAME=Job1" \
+    -e "JOB1CONTAINER_NAME=TestContainer" \
     -e "JOB1CRON=* * * * *" \
     -e "JOB1COMMAND=echo 'Hello World'" \
-    -e "JOB1SHELL_COMMAND=docker exec CONTAINER_NAME /bin/bash -c" \
     blacklabelops/cronium
 ~~~~
 
-> Note: Job will be executed inside bash shell inside container with name `CONTAINER_NAME`.
+> Note: Job will be executed inside bash shell inside container with name `TestContainer`.
 
 Example multiple jobs inside remote container:
 
 ~~~~
 $ docker run -d --name cronium \
     -v /var/run/docker.sock:/var/run/docker.sock \
-    -e "CRONIUM_SHELL_COMMAND=docker exec CONTAINER_NAME /bin/bash -c" \
+    -e "CRONIUM_SHELL_COMMAND=/bin/sh -c" \
     -e "JOB1NAME=Job1" \
+    -e "JOB1CONTAINER_NAME=TestContainer" \
     -e "JOB1CRON=* * * * *" \
     -e "JOB1COMMAND=echo 'Hello World'" \
     -e "JOB2NAME=Job2" \
+    -e "JOB2CONTAINER_NAME=TestContainer" \
     -e "JOB2CRON=* * * * *" \
     -e "JOB2COMMAND=echo 'Hello Universe'" \
     blacklabelops/cronium
 ~~~~
 
-> Note: All jobs will be executed inside bash shell inside container with name `CONTAINER_NAME`.
+> Note: All jobs will be executed inside bash shell inside container with name `TestContainer`.
 
 Example single job in local container:
 
@@ -88,7 +108,7 @@ $ docker run -d --name cronium \
 
 > Note: All enumerations must start with 1!
 
-Example nultiple jobs inside local container:
+Example multiple jobs inside local container:
 
 ~~~~
 $ docker run -d --name cronium \
@@ -115,7 +135,7 @@ configuration field inside a job configuration.
 The global configuration consists of the following fields. The field's environment variables are all preceeded by `CRONIUM_`:
 
 * `WORKING_DIRECTORY`: (Optional) The working directory for all cron jobs. Must be full path leading to an existing directory inside the container.
-* `SHELL_COMMAND`: (Optional) The shell command for all cron jobs. Default: `/bin/bash -c`, all jobs are executed inside bash shell by default.
+* `SHELL_COMMAND`: (Optional) The shell command for all cron jobs. Example: `/bin/sh -c` or `/bin/bash -c`, all jobs are executed inside shell by default.
 * `EXECUTION`: (Optional) The execution mode for all cron jobs. Possible values `parallel` or `sequential`. A single job will be either executes strictly sequential or multiple instances of the same job can run in parallel. Default is: `sequential`.
 * `ON_ERROR`: (Optional) The error mode for all cron jobs. Possible values `stop` or `continue`. A single job will be either executed continuesly despite of errors or will not be scheduled anymore after an error occured. Default is: `continue`.
 
@@ -145,11 +165,11 @@ You can define an arbitrary amount of jobs. That's why jobs have to defined by e
 
 Job settings are defined by configuration fields and the jobs can be defined using the following fields:
 
-* `NAME`: (required) A unique job name, must be unique among all container's jobs.
-* `CRON`: (required) The cron schedule. Specifics and syntax can be found here [Wikipedia - Cron](https://en.wikipedia.org/wiki/Cron)
-* `COMMAND`: (required) Then command to be executed.
-* `PRE_COMMAND`: (Optionel) This command to be executed before the actual command.
-* `POST_COMMAND`: (Optionel) This command to be executed after the actual command.
+* `NAME`: (Required) A unique job name, must be unique among all container's jobs.
+* `CRON`: (Required) The cron schedule. Specifics and syntax can be found here [Wikipedia - Cron](https://en.wikipedia.org/wiki/Cron)
+* `COMMAND`: (Required) Then command to be executed.
+* `PRE_COMMAND`: (Optional) This command to be executed before the actual command.
+* `POST_COMMAND`: (Optional) This command to be executed after the actual command.
 * `WORKING_DIRECTORY`: (Optional) The working directory. Default: Set by global configuration.
 * `TIMEOUT_MINUTES`: (Optional) Timeout for this job in minutes. Default: No timeout.
 * `SHELL_COMMAND`: (Optional) The shell command. Default: Set by global configuration.
