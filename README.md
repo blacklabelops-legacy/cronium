@@ -11,7 +11,7 @@ You can define an arbitrary amount of cron jobs executed inside any Docker conta
 
 Good for:
 
-* Databse dumps
+* Database dumps
 * Configuration reloads
 * Any periodical maintenance activity
 
