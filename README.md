@@ -1,8 +1,5 @@
 # Cronium - Dockerized Cron
 
-[![Open Issues](https://img.shields.io/github/issues/blacklabelops/cronium.svg)](https://github.com/blacklabelops/cronium/issues) [![Stars on GitHub](https://img.shields.io/github/stars/blacklabelops/cronium.svg)](https://github.com/cblacklabelops/cronium/stargazers)
-[![Docker Stars](https://img.shields.io/docker/stars/blacklabelops/cronium.svg)](https://hub.docker.com/r/blacklabelops/cronium/) [![Docker Pulls](https://img.shields.io/docker/pulls/blacklabelops/cronium.svg)](https://hub.docker.com/r/blacklabelops/cronium/)
-
 Cron scheduler for container environments.
 
 # Why Cronium?
